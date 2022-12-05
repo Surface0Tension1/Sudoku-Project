@@ -55,12 +55,16 @@ class Cell:
 
         # If this cell has a nonzero value, that value is displayed.
         if self.value != 0:
-            text = font.render(str(self.sketch_value), True, (128, 128, 128))
+            text = font.render(str(self.value), True, (0, 0, 0))
             self.screen.blit(text, (x + 5, y + 5))
+
+        elif self.sketch_value != 0:
+            text = font.render(str(self.sketch_value), True, (128, 128, 128))
+            self.screen.blit(text, (x+5, y+5))
 
         # Otherwise, no value is displayed in the cell.
         elif self.value == 0:
-            text = font.render('', True, (0, 0, 0))
+            text = font.render('', True, (255, 255, 255))
             self.screen.blit(text, (x + (56/2 - text.get_width()/2), y + (56/2 - text.get_height()/2)))
 
         #  The cell is outlined red if it is currently selected. Use (255, 0, 0) to output red
@@ -92,7 +96,7 @@ class Board:
 
         # Calls the initialize_board function to keep track of the 2D list
         self.board = generate_sudoku(self.rows, self.difficulty)
-        # print(self.board)
+        print(self.board)
 
         # Construct a list of cells by calling the Cell class and getting how many columns and rows is wanted
         self.cells = [[Cell(self.board[i][j], i, j, screen) for j in range(cols)] for i in range(rows)]
