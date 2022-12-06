@@ -56,7 +56,6 @@ while running:
                 pass
                 #reset
             if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-                pass
                 game_phase = False
                 main_menu = True
             if IncrementW * 3 - 70 <= mouse[0] <= IncrementW * 3 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
