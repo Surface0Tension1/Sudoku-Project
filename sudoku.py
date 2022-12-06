@@ -22,7 +22,7 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 
 running = True
 main_menu = True
-game_phase = True
+game_phase = False
 
 while running:
     for event in pygame.event.get():
@@ -33,6 +33,7 @@ while running:
             if IncrementW-70 <= mouse[0] <= IncrementW+70 and IncrementH-25 <= mouse[1] <= IncrementH+25:
                 board = Board(9, 9, width, height-100, screen, 30)
                 main_menu = False
+                game_phase = True
             if IncrementW*2-70 <= mouse[0] <= IncrementW*2+70 and IncrementH-25 <= mouse[1] <= IncrementH+25:
                 board = Board(9, 9, width, height-100, screen, 40)
                 num_array = generate_sudoku(9, 40)
@@ -40,6 +41,7 @@ while running:
                     for j in range(9):
                         board.cells[i][j].set_cell_value(num_array[i][j])
                 main_menu = False
+                game_phase = True
             if IncrementW * 3 - 70 <= mouse[0] <= IncrementW*3+70 and IncrementH-25 <= mouse[1] <= IncrementH+25:
                 board = Board(9, 9, width, height-100, screen, 50)
                 num_array = generate_sudoku(9, 50)
@@ -47,14 +49,16 @@ while running:
                     for j in range(9):
                         board.cells[i][j].set_cell_value(num_array[i][j])
                 main_menu = False
+                game_phase = True
 
         if event.type == pygame.MOUSEBUTTONDOWN and game_phase:
             if IncrementW - 70 <= mouse[0] <= IncrementW + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-                main_menu = True
-                game_phase = False
+                pass
+                #reset
             if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
                 pass
-                #restart
+                game_phase = False
+                main_menu = True
             if IncrementW * 3 - 70 <= mouse[0] <= IncrementW * 3 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
                 pygame.quit()
 
@@ -149,11 +153,10 @@ while running:
             # to the display surface object
             # at the center coordinate.
             screen.blit(textH, textRectH)
-        if not main_menu:
+        if game_phase:
             board.draw(screen)
 
-            if width / 4 - 70 <= mouse[0] <= width / 4 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25 \
-                    and game_phase:
+            if width / 4 - 70 <= mouse[0] <= width / 4 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
 
                 text_reset = font.render('Reset', True, light_blue, grey)
 
