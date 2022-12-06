@@ -10,6 +10,7 @@ red = (255, 0, 0)
 grey = (100, 100, 100)
 blue = (0, 0, 128)
 light_blue = (65, 205, 255)
+black = (0,0,0)
 width = 500
 height = 600
 IncrementW = width/4
@@ -23,6 +24,7 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 running = True
 main_menu = True
 game_phase = False
+game_over = False
 
 while running:
     for event in pygame.event.get():
@@ -50,16 +52,6 @@ while running:
                         board.cells[i][j].set_cell_value(num_array[i][j])
                 main_menu = False
                 game_phase = True
-
-        if event.type == pygame.MOUSEBUTTONDOWN and game_phase:
-            if IncrementW - 70 <= mouse[0] <= IncrementW + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-                pass
-                #reset
-            if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-                game_phase = False
-                main_menu = True
-            if IncrementW * 3 - 70 <= mouse[0] <= IncrementW * 3 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-                pygame.quit()
 
         mouse = pygame.mouse.get_pos()
 
@@ -164,7 +156,7 @@ while running:
 
                 screen.blit(text_reset, textRect_reset)
 
-            elif game_phase:
+            else:
                 text_reset = font.render('Reset', True, blue, grey)
 
                 textRect_reset = text_reset.get_rect()
@@ -172,8 +164,7 @@ while running:
 
                 screen.blit(text_reset, textRect_reset)
 
-            if width / 2 - 70 <= mouse[0] <= width / 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25 \
-                    and game_phase:
+            if width / 2 - 70 <= mouse[0] <= width / 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
 
                 text_restart = font.render('Restart', True, light_blue, grey)
 
@@ -182,7 +173,7 @@ while running:
 
                 screen.blit(text_restart, textRect_restart)
 
-            elif game_phase:
+            else:
                 text_restart = font.render('Restart', True, blue, grey)
 
                 textRect_restart = text_restart.get_rect()
@@ -190,8 +181,7 @@ while running:
 
                 screen.blit(text_restart, textRect_restart)
 
-            if width / 4 * 3 - 70 <= mouse[0] <= width / 4 * 3 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25 \
-                    and game_phase:
+            if width / 4 * 3 - 70 <= mouse[0] <= width / 4 * 3 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
 
                 text_quit = font.render('Quit', True, light_blue, grey)
 
@@ -200,7 +190,7 @@ while running:
 
                 screen.blit(text_quit, textRect_quit)
 
-            elif game_phase:
+            else:
                 text_quit = font.render('Quit', True, blue, grey)
 
                 textRect_quit = text_quit.get_rect()
@@ -208,15 +198,123 @@ while running:
 
                 screen.blit(text_quit, textRect_quit)
 
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                x, y = board.click(mouse[0], mouse[1])
+                if mouse[1] <= 500:
+                    board.select(x, y)
+                if IncrementW - 70 <= mouse[0] <= IncrementW + 70 and GameButtonHeight - 25 <= mouse[1]\
+                        <= GameButtonHeight + 25:
+                    board.reset_to_original()
+                if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1]\
+                        <= GameButtonHeight + 25:
+                    game_phase = False
+                    main_menu = True
+                if IncrementW * 3 - 70 <= mouse[0] <= IncrementW * 3 + 70 and GameButtonHeight - 25 <= mouse[1]\
+                        <= GameButtonHeight + 25:
+                    pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if pygame.key.get_pressed()[pygame.K_1]:
+                    board.sketch(1)
+                if pygame.key.get_pressed()[pygame.K_2]:
+                    board.sketch(2)
+                if pygame.key.get_pressed()[pygame.K_3]:
+                    board.sketch(3)
+                if pygame.key.get_pressed()[pygame.K_4]:
+                    board.sketch(4)
+                if pygame.key.get_pressed()[pygame.K_5]:
+                    board.sketch(5)
+                if pygame.key.get_pressed()[pygame.K_6]:
+                    board.sketch(6)
+                if pygame.key.get_pressed()[pygame.K_7]:
+                    board.sketch(7)
+                if pygame.key.get_pressed()[pygame.K_8]:
+                    board.sketch(8)
+                if pygame.key.get_pressed()[pygame.K_9]:
+                    board.sketch(9)
+                if pygame.key.get_pressed()[pygame.K_BACKSPACE]:
+                    board.clear()
+                if pygame.key.get_pressed()[pygame.K_RETURN]:
+                    x, y = board.selected
+                    board.place_number(board.cells[x][y].sketch_value)
+                    if board.is_full():
+                        game_phase = False
+                        game_over = True
+                if pygame.key.get_pressed()[pygame.K_LEFT]:
+                    x, y = board.selected
+                    if 0 < y:
+                        board.select(x, y-1)
+                if pygame.key.get_pressed()[pygame.K_RIGHT]:
+                    x, y = board.selected
+                    if y < 8:
+                        board.select(x, y+1)
+                if pygame.key.get_pressed()[pygame.K_UP]:
+                    x, y = board.selected
+                    if 0 < x:
+                        board.select(x - 1, y)
+                if pygame.key.get_pressed()[pygame.K_DOWN]:
+                    x, y = board.selected
+                    if x < 8:
+                        board.select(x+1, y)
 
+        if game_over:
+            win = board.check_board()
+            if win:
+                text_end = font.render('WIN', True, (0,0,0), grey)
 
+                textRect_end = text_end.get_rect()
+                textRect_end.center = (width // 2, IncrementH)
 
+                screen.blit(text_end, textRect_end)
 
-        if event.type == pygame.MOUSEBUTTONDOWN and not main_menu:
-            x, y = board.click(mouse[0], mouse[1])
-            if mouse[1] <= 500:
-                board.select(x, y)
+                if width / 2 - 70 <= mouse[0] <= width / 2 + 70 and GameButtonHeight - 25 <= mouse[
+                    1] <= GameButtonHeight + 25 \
+                        and game_phase:
+
+                    text_exit = font.render('Exit', True, light_blue, grey)
+
+                    textRect_exit = text_exit.get_rect()
+                    textRect_exit.center = (width // 2, GameButtonHeight)
+
+                    screen.blit(text_exit, textRect_exit)
+
+                else:
+                    text_exit = font.render('Exit', True, blue, grey)
+
+                    textRect_exit = text_exit.get_rect()
+                    textRect_exit.center = (width // 2, GameButtonHeight)
+
+                    screen.blit(text_exit, textRect_exit)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1] \
+                            <= GameButtonHeight + 25:
+                        pygame.quit()
+            else:
+                text_end = font.render('LOSE', True, (0,0,0), grey)
+
+                textRect_end = text_end.get_rect()
+                textRect_end.center = (width // 2, IncrementH)
+
+                screen.blit(text_end, textRect_end)
+                if width / 2 - 70 <= mouse[0] <= width / 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
+
+                    text_restart = font.render('Restart', True, light_blue, grey)
+                    textRect_restart = text_restart.get_rect()
+                    textRect_restart.center = (width // 2, GameButtonHeight)
+                    screen.blit(text_restart, textRect_restart)
+
+                else:
+                    text_restart = font.render('Restart', True, blue, grey)
+
+                    textRect_restart = text_restart.get_rect()
+                    textRect_restart.center = (width // 2, GameButtonHeight)
+
+                    screen.blit(text_restart, textRect_restart)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1] \
+                            <= GameButtonHeight + 25:
+                        game_over = False
+                        main_menu = True
+
         pygame.display.flip()
-
 pygame.quit()
 
