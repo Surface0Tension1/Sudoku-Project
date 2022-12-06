@@ -1,4 +1,3 @@
-from constants import *
 import pygame
 from sudoku_generator import *
 
@@ -95,25 +94,12 @@ class Board:
         self.difficulty = difficulty
 
         # Calls the initialize_board function to keep track of the 2D list
-        self.board = generate_sudoku(self.rows, self.difficulty)
-        print(self.board)
+        self.og_board = generate_sudoku(self.rows, self.difficulty)
+        self.board = self.og_board
+        print(self.og_board)
 
         # Construct a list of cells by calling the Cell class and getting how many columns and rows is wanted
         self.cells = [[Cell(self.board[i][j], i, j, screen) for j in range(cols)] for i in range(rows)]
-
-
-    # Returns the Soduku grid
-    def initialize_board(self):
-
-        # Uses line comprehension and random.randint function for randomly generated numbers as row and column values
-        board = [[random.randint(1,9) for i in range(9)] for j in range(9)]
-
-        # Uses double indexing to set values within the board's list equal to 0 (will be revised later)
-        board[0][1] = 0
-        board[3][5] = 0
-        board[2][7] = 0
-        return board
-
 
     # Draws every cell on the board and draws an outline of the Sudoku grid
     def draw(self, screen):
@@ -160,7 +146,6 @@ class Board:
             for col in range(self.cols):
                 self.cells[row][col].draw()
 
-
     # Marks the cell at (row, col) in the board as the current selected cell.
     # Once a cell has been selected, the user can edit its value or sketched value
     def select(self, row, col):
@@ -174,7 +159,6 @@ class Board:
         self.cells[row][col].selected = True
         self.selected = (row, col)
         self.cells[row][col].draw()
-
 
     # Returns a tuple of the (row, col) when a tuple of (x, y) is within the displayed board
     def click(self, x, y):
@@ -195,14 +179,13 @@ class Board:
             print('coordinates are out of range of board')
             return None
 
-
     # Clears the value cell. Note that the user can only remove the cell values and sketched value that are
     # filled by themselves.
     def clear(self):
         row, col = self.selected
-        if self.cells[row][col].value == 0:
+        if self.og_board[row][col] == 0:
+            self.cells[row][col].set_cell_value(0)
             self.cells[row][col].set_sketched_value(0)
-
 
     # Sets the sketched value of the current selected cell equal to user entered value
     def sketch(self, val):
@@ -210,25 +193,22 @@ class Board:
         self.cells[row][col].set_sketched_value(val)
         # It will be displayed at the top left corner of the cell using the draw() function
 
-
     # Sets the value of the current selected cell equal to user entered value; Called when user presses the Enter key
     def place_number(self, val):
         row, col = self.selected
         if self.cells[row][col].value == 0:
             self.cells[row][col].set_cell_value(val)
-            self.update_model()
-
-
-            self.cells[row][col].set_cell_value(0)
             self.cells[row][col].set_sketched_value(0)
-            self.update_model()
+            self.update_board()
             return False
-
 
     # Reset all cells in the board to their original values (0 if cleared, otherwise the corresponding digit).
     def reset_to_original(self):
-        pass
-
+        for i in range(self.rows):
+            for j in range(self.cols):
+                self.cells[i][j].set_sketched_value(0)
+                self.cells[i][j].set_cell_value(self.og_board[i][j])
+        self.update_board()
 
     # Returns a Boolean value indicating whether the board is full or not
     def is_full(self):
@@ -244,10 +224,9 @@ class Board:
         # Returns True if all cell values do not equal 0, indicating that no cells are empty and the board is full
         return True
 
-
     # Updates the underlying 2D board with the values in all cells
     def update_board(self):
-        self.model = [[self.cells[i][j].value for j in range(self.cols)] for i in range(self.rows)]
+        self.board = [[self.cells[i][j].value for j in range(self.cols)] for i in range(self.rows)]
 
 
     # Finds an empty cell and returns its row and col as a tuple (x, y)
@@ -269,6 +248,13 @@ class Board:
     def check_board(self):
         for i in range(self.rows):
             for j in range(self.cols):
-                if self.cells[i][j].value == 0:
+                if self.cells[i][j].value in self.board[i]:
+                    return False
+
+                if self.cells[i][j].value == [self.board[x][j] for x in range(self.rows)]:
+                    return False
+
+                if self.cells[i][j].value == [[self.board[r][c] for c in range(j//3*3, j//3*3 +3)] for r in range(i//3*3, i//3*3 + 3)]:
                     return False
         return True
+
