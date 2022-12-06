@@ -5,6 +5,7 @@ from sudoku_generator import *
 
 pygame.init()
 
+# constants for color and pixel height/width
 white = (255, 255, 255)
 red = (255, 0, 0)
 grey = (100, 100, 100)
@@ -17,10 +18,12 @@ IncrementW = width/4
 IncrementH = (height-100)/2
 GameButtonHeight = IncrementH * 2.2
 
+# pygame specific constants
 screen = pygame.display.set_mode([width, height])
 pygame.display.set_caption('Sudoku')
 font = pygame.font.Font('freesansbold.ttf', 32)
 
+# variables that hold the current state of the game which allows different inputs at different points
 running = True
 main_menu = True
 game_phase = False
@@ -31,7 +34,8 @@ while running:
         if event.type == pygame.QUIT:
             # terminates the loop and subsequently ends the program when the game window is closed
             running = False
-
+        
+        # performs specified actions (creating board object) if main menu is true and mouse clicks specificed area (button)
         if event.type == pygame.MOUSEBUTTONDOWN and main_menu:
             if IncrementW-70 <= mouse[0] <= IncrementW+70 and IncrementH-25 <= mouse[1] <= IncrementH+25:
                 board = Board(9, 9, width, height-100, screen, 30)
@@ -53,9 +57,11 @@ while running:
                         board.cells[i][j].set_cell_value(num_array[i][j])
                 main_menu = False
                 game_phase = True
-
+                
+        # stores mouse position for user inputs/ changing button colors if hovered over
         mouse = pygame.mouse.get_pos()
-
+        
+        # creates simple white background
         screen.fill(white)
 
         if width / 4 - 70 <= mouse[0] <= width / 4 + 70 and IncrementH - 25 <= mouse[1] <= IncrementH + 25\
@@ -249,8 +255,12 @@ while running:
                         board.select(x+1, y)
 
         if game_over:
+            # check_board() returns True or False depending on if the correct solution is evaluted 
+            # this is then stored in win
             win = board.check_board()
             if win:
+                # displays 'win' text if there is the win condition
+                # also displays a single 'Exit' button in order to stop the program using same method as prior
                 text_end = font.render('WIN', True, (0,0,0), grey)
 
                 textRect_end = text_end.get_rect()
@@ -281,6 +291,8 @@ while running:
                             <= GameButtonHeight + 25:
                         pygame.quit()
             else:
+                # this occurs when 'win' returns false and will start the lose condition
+                # will display 'Lose' text object followed by a 'restart' button with the same functionality as before 
                 text_end = font.render('LOSE', True, (0,0,0), grey)
 
                 textRect_end = text_end.get_rect()
@@ -304,6 +316,8 @@ while running:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1] \
                             <= GameButtonHeight + 25:
+                        # when main_menu is set to true, the user will be brought to the main_menu state based on the main_menu conditionals
+                        # fundtions the same as prior restart button
                         game_over = False
                         main_menu = True
 
