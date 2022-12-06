@@ -248,24 +248,11 @@ class Board:
     def check_board(self):
         for i in range(self.rows):
             for j in range(self.cols):
-                # added the count variables so that the program would only give a loss if there was more than one
-                # instance of a number in a row, column, or box
-                countR = 0
-                countC = 0
-                countB = 0
-                if self.cells[i][j].value in self.board[i]:
-                    countR += 1
-                    if countR > 1:
-                        return False
-
-                if self.cells[i][j].value == [self.board[x][j] for x in range(self.rows)]:
-                    countC += 1
-                    if countC > 1:
-                        return False
-
-                if self.cells[i][j].value == [[self.board[r][c] for c in range(j//3*3, j//3*3 +3)] for r in range(i//3*3, i//3*3 + 3)]:
-                    countB += 1
-                    if countB > 1:
-                        return False
+                if self.board[i].count(self.cells[i][j].value) > 1:
+                    return False
+                if [self.board[x][j] for x in range(self.rows)].count(self.cells[i][j].value) > 1:
+                    return False
+                if [[self.board[r][c] for c in range(j//3*3, j//3*3 +3)] for r in range(i//3*3, i//3*3 + 3)].count(self.cells[i][j].value) > 1:
+                    return False
         return True
-
+    
