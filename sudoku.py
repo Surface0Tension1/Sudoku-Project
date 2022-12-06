@@ -50,8 +50,8 @@ while running:
 
         if event.type == pygame.MOUSEBUTTONDOWN and game_phase:
             if IncrementW - 70 <= mouse[0] <= IncrementW + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-                pass
-                #reset
+                main_menu = True
+                game_phase = False
             if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
                 pass
                 #restart
