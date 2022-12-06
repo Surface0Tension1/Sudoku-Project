@@ -37,31 +37,38 @@ class SudokuGenerator:
     def get_board(self):
         return self.board
 
+# displays a board to the console, mostly for debugging purposes
     def print_board(self):
         for row in self.board:
             for col in row:
                 print(col, end=' ')
             print()
 
+# used to validate the raw that the users number guess
     def valid_in_row(self, row, num):
-        if num in self.get_board()[row]:
+        if num in self.get_board()[row]: # brackets used to clarify which row to check
             return False
         else:
             return True
 
     def valid_in_col(self, col, num):
         for x in range(9):
-            if num == self.get_board()[x][col]:
+            if num == self.get_board()[x][col]: 
+		# cause its a 2-D array the first bracket 
+		# checks holds whichever position on that 
+		# row and the second bracket checks each row 
+		# at that specific positon thus checking the entierty of the column
                 return False
         return True
 
+# this def simply creates a starting point and moves 3 values in both directions to create the box
     def valid_in_box(self, row_start, col_start, num):
         for r in range(row_start, row_start + 3):
             for c in range(col_start, col_start + 3):
                 if self.get_board()[r][c] == num:
                     return False
         return True
-
+# uses the previous 3 defs to check the validity of the imputed number iin all aspects
     def is_valid(self, row, col, num):
         if self.valid_in_row(row, num):
             if self.valid_in_col(col, num):
@@ -74,6 +81,7 @@ class SudokuGenerator:
         else:
             return False
 
+# this will be the fundamental point in filling in the three diagonal boxes within the board 
     def fill_box(self, row_start, col_start):
         for row in range(row_start, row_start + 3):
             for col in range(col_start, col_start + 3):
