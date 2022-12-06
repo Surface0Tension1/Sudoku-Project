@@ -29,6 +29,7 @@ game_over = False
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            # terminates the loop and subsequently ends the program when the game window is closed
             running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN and main_menu:
@@ -72,83 +73,52 @@ while running:
             # to the display surface object
             # at the center coordinate.
             screen.blit(textE, textRectE)
+            '''
+            Title: Python | Display text to PyGame window
+            Author: Geeksforgeeks
+            Date: Apr. 9, 2022
+            Code Version: Python
+            Availability: https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
+            '''
         elif main_menu:
-            # create a text surface object,
-            # on which text is drawn on it.
+            # the change in text color lets you know when you're hovering over the button
             textE = font.render('Easy', True, blue, grey)
-
-            # create a rectangular object for the
-            # text surface object
             textRectE = textE.get_rect()
             textRectE.center = (width // 4, IncrementH)
-
-            # copying the text surface object
-            # to the display surface object
-            # at the center coordinate.
             screen.blit(textE, textRectE)
+            
         if width / 2 - 70 <= mouse[0] <= width / 2 + 70 and IncrementH - 25 <= mouse[1] <= IncrementH + 25\
                 and main_menu:
-            # create a text surface object,
-            # on which text is drawn on it.
             textM = font.render('Medium', True, light_blue, grey)
-
-            # create a rectangular object for the
-            # text surface object
             textRectM = textM.get_rect()
             textRectM.center = (width // 2, IncrementH)
-
-            # copying the text surface object
-            # to the display surface object
-            # at the center coordinate.
             screen.blit(textM, textRectM)
+            
         elif main_menu:
-            # create a text surface object,
-            # on which text is drawn on it.
             textM = font.render('Medium', True, blue, grey)
-
-            # create a rectangular object for the
-            # text surface object
             textRectM = textM.get_rect()
             textRectM.center = (width // 2, IncrementH)
-
-            # copying the text surface object
-            # to the display surface object
-            # at the center coordinate.
             screen.blit(textM, textRectM)
+            
         if width / 4 * 3 - 70 <= mouse[0] <= width / 4*3 + 70 and IncrementH - 25 <= mouse[1] <= IncrementH + 25\
                 and main_menu:
-            # create a text surface object,
-            # on which text is drawn on it.
             textH = font.render('Hard', True, light_blue, grey)
-
-            # create a rectangular object for the
-            # text surface object
             textRectH = textH.get_rect()
             textRectH.center = (width // 4 * 3, IncrementH)
-
-            # copying the text surface object
-            # to the display surface object
-            # at the center coordinate.
             screen.blit(textH, textRectH)
+            
         elif main_menu:
-            # create a text surface object,
-            # on which text is drawn on it.
             textH = font.render('Hard', True, blue, grey)
-
-            # create a rectangular object for the
-            # text surface object
             textRectH = textH.get_rect()
             textRectH.center = (width // 4 * 3, IncrementH)
-
-            # copying the text surface object
-            # to the display surface object
-            # at the center coordinate.
             screen.blit(textH, textRectH)
+            
         if game_phase:
+            # draws the screen (includes the borders and every cell)
             board.draw(screen)
 
             if width / 4 - 70 <= mouse[0] <= width / 4 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-
+                # adds the reset button on the game screen
                 text_reset = font.render('Reset', True, light_blue, grey)
 
                 textRect_reset = text_reset.get_rect()
@@ -165,7 +135,7 @@ while running:
                 screen.blit(text_reset, textRect_reset)
 
             if width / 2 - 70 <= mouse[0] <= width / 2 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-
+                # adds the restart button on the game screen
                 text_restart = font.render('Restart', True, light_blue, grey)
 
                 textRect_restart = text_restart.get_rect()
@@ -182,7 +152,7 @@ while running:
                 screen.blit(text_restart, textRect_restart)
 
             if width / 4 * 3 - 70 <= mouse[0] <= width / 4 * 3 + 70 and GameButtonHeight - 25 <= mouse[1] <= GameButtonHeight + 25:
-
+                # adds the quit button to the game screen
                 text_quit = font.render('Quit', True, light_blue, grey)
 
                 textRect_quit = text_quit.get_rect()
@@ -201,19 +171,34 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x, y = board.click(mouse[0], mouse[1])
                 if mouse[1] <= 500:
+                    # this conditional is set so that the select method only functions
+                    # if you click within the bounds of the playable area
                     board.select(x, y)
                 if IncrementW - 70 <= mouse[0] <= IncrementW + 70 and GameButtonHeight - 25 <= mouse[1]\
                         <= GameButtonHeight + 25:
+                    # this location pertains to the reset button
+                    # when the mouse in the area of the reset button and is clicked,
+                    # the board resets to its original state
                     board.reset_to_original()
                 if IncrementW * 2 - 70 <= mouse[0] <= IncrementW * 2 + 70 and GameButtonHeight - 25 <= mouse[1]\
                         <= GameButtonHeight + 25:
+                    # this location pertains to the restart button
+                    # when the mouse in the area of the restart button and is clicked,
+                    # the program turns off the game_phase and turns on main menu
+                    # when the program loops because it's still running,
+                    # the program displays the main menu instead of the game board
                     game_phase = False
                     main_menu = True
                 if IncrementW * 3 - 70 <= mouse[0] <= IncrementW * 3 + 70 and GameButtonHeight - 25 <= mouse[1]\
                         <= GameButtonHeight + 25:
+                    # this location pertains to the quit button
+                    # when the mouse in the area of the quit button and is clicked,
+                    # the program terminates and the game window is closed
                     pygame.quit()
             if event.type == pygame.KEYDOWN:
+                # these events cover every keypress that the user should be making
                 if pygame.key.get_pressed()[pygame.K_1]:
+                    # for all number key presses, the program sketches that key's number value into the cell
                     board.sketch(1)
                 if pygame.key.get_pressed()[pygame.K_2]:
                     board.sketch(2)
@@ -232,14 +217,21 @@ while running:
                 if pygame.key.get_pressed()[pygame.K_9]:
                     board.sketch(9)
                 if pygame.key.get_pressed()[pygame.K_BACKSPACE]:
+                    # when backspace is pressed, the program sets the cell value and sketch value of the cell to 0
+                    # unless that cell was provided by the sudoku generator
                     board.clear()
                 if pygame.key.get_pressed()[pygame.K_RETURN]:
+                    # when the enter key is pressed, the program set the cell value equal to the sketched value of the
+                    # currently selected cell
                     x, y = board.selected
                     board.place_number(board.cells[x][y].sketch_value)
+                    # the program checks if the board is full after every enter key press
+                    # if the board is full, the game_phase is turned off and the program advances to the game_over phase
                     if board.is_full():
                         game_phase = False
                         game_over = True
                 if pygame.key.get_pressed()[pygame.K_LEFT]:
+                    # these arrow key presses allow the user to select an adjacent cell to the currently selected cell
                     x, y = board.selected
                     if 0 < y:
                         board.select(x, y-1)
@@ -316,5 +308,5 @@ while running:
                         main_menu = True
 
         pygame.display.flip()
+        # updates the display every loop
 pygame.quit()
-
